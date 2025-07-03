@@ -59,17 +59,10 @@ window.addEventListener("mousemove",(event)=>{
 window.addEventListener("keydown",(e)=>{
   if(e.key === " "){
     const newBox = invisibleBox.clone();
-    loader.load("./textures/maxvanden.jpg", function(texture) {
-      // For Three.js r150+:
-      texture.colorSpace = THREE.SRGBColorSpace;
-      // For older Three.js:
-      // texture.encoding = THREE.sRGBEncoding;
-
-      newBox.material = new THREE.MeshBasicMaterial({ map: texture });
-      scene.add(newBox);
-      boxes.push(newBox);
-      scene.remove(invisibleBox);
-    });
+    newBox.material = new THREE.MeshBasicMaterial({color:0xffff00});
+    scene.add(newBox);
+    boxes.push(newBox);
+    scene.remove(invisibleBox);
   }
 })
 
