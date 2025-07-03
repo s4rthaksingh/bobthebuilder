@@ -8,6 +8,9 @@ const camera = new THREE.PerspectiveCamera(
   0.1,
   1000
 );
+camera.position.z = 150;
+camera.position.y = 100;
+camera.lookAt(0, 0, 0);
 
 const renderer = new THREE.WebGLRenderer();
 renderer.setSize(window.innerWidth, window.innerHeight);
@@ -53,9 +56,6 @@ const invisibleBoxMaterial = new THREE.MeshBasicMaterial({
 const invisibleBox = new THREE.Mesh(invisibleBoxGeometry, invisibleBoxMaterial);
 let hoveredObject = planes[0];
 
-camera.position.z = 20;
-camera.position.y = 20;
-camera.lookAt(0, 0, 0);
 
 window.addEventListener("mousemove", (event) => {
   pointer.x = (event.clientX / window.innerWidth) * 2 - 1;
