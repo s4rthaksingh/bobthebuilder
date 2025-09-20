@@ -1,5 +1,9 @@
 import * as THREE from "three";
 import { OrbitControls, plane } from "three/examples/jsm/Addons.js";
+import { io } from "socket.io-client";
+
+const socket = io('http://localhost:3000');
+
 
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(
@@ -56,6 +60,36 @@ const invisibleBoxMaterial = new THREE.MeshBasicMaterial({
 const invisibleBox = new THREE.Mesh(invisibleBoxGeometry, invisibleBoxMaterial);
 let hoveredObject = planes[0];
 
+socket.on('newBox',(boxData) => {
+  const newBox = invisibleBox.clone();
+  newBox.material = new THREE.MeshBasicMaterial({color : 0xffff00});
+
+  newBox.position.set(
+    boxData.position.x,
+    boxData.position.y,
+    boxData.position.z
+  );
+  newBox.rotation.set(
+    boxData.rotation.x,
+    boxData.rotation.y,
+    boxData.rotation.z
+  );
+  newBox.scale.set(
+    boxData.scale.x,
+    boxData.scale.y,
+    boxData.scale.z
+  );
+
+  scene.add(newBox);
+  boxes.push(newBox);
+
+  const edges = new THREE.EdgesGeometry(newBox.geometry);
+  const outline = new THREE.LineSegments(
+    edges,
+    new THREE.LineBasicMaterial({color:0x000000, linewidth : 2})
+  );
+  newBox.add(outline);
+})
 
 window.addEventListener("mousemove", (event) => {
   pointer.x = (event.clientX / window.innerWidth) * 2 - 1;
@@ -77,6 +111,11 @@ window.addEventListener("keydown", (e) => {
       new THREE.LineBasicMaterial({ color: 0x000000, linewidth: 2 }) // Black outline
     );
     newBox.add(outline);
+    socket.emit("newBox", {
+      position: { x: newBox.position.x, y: newBox.position.y, z: newBox.position.z },
+      rotation: { x: newBox.rotation.x, y: newBox.rotation.y, z: newBox.rotation.z },
+      scale:    { x: newBox.scale.x,    y: newBox.scale.y,    z: newBox.scale.z }
+    });    
   }
 });
 
